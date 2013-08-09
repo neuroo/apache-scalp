@@ -4,7 +4,7 @@ Scalp! is a log analyzer for the Apache web server that aims to look for securit
 ## How it works
 Scalp is basically using the regular expression from the [PHP-IDS](http://phpids.org/) project and matches the lines from the Apache access log file. These regexp has been chosen because of their quality and the top activity of the team maintaining that project.
 
-You will then need this file [https://dev.itratos.de/projects/php-ids/repository/raw/trunk/lib/IDS/default_filter.xml](https://dev.itratos.de/projects/php-ids/repository/raw/trunk/lib/IDS/default_filter.xml) in order to run Scalp.
+You will then need this file [default_filter.xml](https://raw.github.com/PHPIDS/PHPIDS/master/lib/IDS/default_filter.xml) in order to run Scalp.
 
 Scalp started as a simple python script which is still maintained, but I plan to focus my effort on the binary version (written in C++) for efficiency when it comes to scalp huge log files.
 
