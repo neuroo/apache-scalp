@@ -64,6 +64,7 @@ names = {
     'lfi'  : 'Local File Inclusion'
 }
 
+#c_reg = re.compile(r'^(?P<host>.*) \| (?P<port>.*) \| (?P<ip>.*) \| \[(?P<date>.*)[-|+](?P<timezone>.*)\] \| (?P<method>.*) (?P<url>.*) HTTP/(.*) \| (?P<response>.*) \| (?P<size>.*) \| (?P<referrer>.*) \| (?P<agent>.*) \| (?P<duration>.*) \| (?P<phpsessid>.*)$'
 c_reg = re.compile(r'^(.+)-(.*)\[(.+)[-|+](\d+)\] "([A-Z]+)?(.+) HTTP/\d.\d" (\d+)(\s[\d]+)?(\s"(.+)" )?(.*)$')
 table = {}
 
@@ -348,16 +349,16 @@ def scalper(access, filters, preferences = [], output = "text"):
                 continue
             if c_reg.match(line):
                 out = c_reg.search(line)
-                ip = out.group(1)
-                name  = out.group(2)
-                date = out.group(3)
-                ext  = out.group(4)
-                method = out.group(5)
-                url = out.group(6)
-                response = out.group(7)
-                byte = out.group(8)
-                referrer = out.group(9)
-                agent = out.group(10)
+                ip = out.group('ip')
+                name  = out.group('host')
+                date = out.group('date')
+                ext  = out.group('timezone')
+                method = out.group('method')
+                url = out.group('url')
+                response = out.group('response')
+                byte = out.group('size')
+                referrer = out.group('referrer')
+                agent = out.group('agent')
 
                 if preferences['ip_exclude'] != [] or preferences['subnet_exclude'] != []:
                     ip_split = ip.split()
