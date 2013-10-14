@@ -64,7 +64,7 @@ names = {
     'lfi'  : 'Local File Inclusion'
 }
 
-c_reg = re.compile(r'^(.+)-(.*)\[(.+)[-|+](\d+)\] "([A-Z]+)?(.+) HTTP/\d.\d" (\d+)(\s[\d]+)?(\s"(.+)" )?(.*)$')
+c_reg = re.compile(r'^(?P<ip>.+)-(?P<host>.*)\[(?P<date>.+)[-|+](?P<timezone>\d+)\] "(?P<method>[A-Z]+)?(?P<url>.+) HTTP/\d.\d" (?P<response>\d+)(?P<size>\s[\d]+)?(?P<referrer>\s"(?P<agent>.+)" )?(.*)$')
 table = {}
 
 class BreakLoop( Exception ):
