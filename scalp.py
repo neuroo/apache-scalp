@@ -64,7 +64,6 @@ names = {
     'lfi'  : 'Local File Inclusion'
 }
 
-#c_reg = re.compile(r'^(?P<host>.*) \| (?P<port>.*) \| (?P<ip>.*) \| \[(?P<date>.*)[-|+](?P<timezone>.*)\] \| (?P<method>.*) (?P<url>.*) HTTP/(.*) \| (?P<response>.*) \| (?P<size>.*) \| (?P<referrer>.*) \| (?P<agent>.*) \| (?P<duration>.*) \| (?P<phpsessid>.*)$'
 c_reg = re.compile(r'^(.+)-(.*)\[(.+)[-|+](\d+)\] "([A-Z]+)?(.+) HTTP/\d.\d" (\d+)(\s[\d]+)?(\s"(.+)" )?(.*)$')
 table = {}
 
