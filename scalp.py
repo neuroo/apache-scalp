@@ -103,6 +103,7 @@ h2 { display: block; font-size: 1.5em; font-weight: 700; background-color: #efef
 
 html_footer = "<div id='footer'>Scalp by Romain Gaucher &lt;r@rgaucher.info&gt; - <a href='http://rgaucher.info'>http://rgaucher.info</a></div></body></html>"
 
+
 class object_dict(dict):
     def __init__(self, initd=None):
         if initd is None:
@@ -277,7 +278,7 @@ def scalper(access, filters, preferences = [], output = "text"):
         print "error: the filters file (XML) doesn't exist"
         print "please download it at https://svn.php-ids.org/svn/trunk/lib/IDS/default_filter.xml"
         return
-    if output not in ('html', 'text', 'xml'):
+    if output not in ('html', 'text', 'xml','json'):
         print "error: the output format '%s' hasn't been recognized" % output
         return
     # load the XML file
@@ -401,7 +402,8 @@ def scalper(access, filters, preferences = [], output = "text"):
             generate_text_file(flag, short_name, filters, preferences['odir'])
         elif 'xml' in preferences['output']:
             generate_xml_file(flag, short_name, filters, preferences['odir'])
-
+        elif 'json' in preferences['output']:
+            generate_json_file(flag, short_name, filters, preferences['odir'])
     # generate exceptions
     if len(diff) > 0:
         o_except = open(os.path.abspath(preferences['odir'] + os.sep + "scalp_except.txt"), "w")
@@ -436,7 +438,6 @@ def generate_text_file(flag, access, filters, odir):
     except IOError:
         print "Cannot open the file:", fname
     return
-
 
 def generate_xml_file(flag, access, filters, odir):
     curtime = time.strftime("%a-%d-%b-%Y", time.localtime())
@@ -505,6 +506,53 @@ def generate_html_file(flag, access, filters, odir):
     except IOError:
         print "Cannot open the file:", fname
     return
+
+
+def generate_json_file(flag, access, filters, odir):
+    print("Genarating JSON file")
+    
+
+    import json
+    curtime = time.strftime("%a-%d-%b-%Y", time.localtime())
+    fname = '%s_scalp_%s.json' % (access,  curtime)
+    fname = os.path.abspath(odir + os.sep + fname)
+    try:
+        out = open(fname, 'w')
+        #out.write(xml_header)
+        out.write("{\n\"scalp\": {\n")
+        
+        for attack_type in flag:
+            name = ""
+            if attack_type in names:
+                name = "\n\t\t\"name\":\"%s\"" % names[attack_type]
+            out.write("\n\t\"%s\":{%s" % (attack_type, name))
+            impacts = flag[attack_type].keys()
+            impacts.sort(reverse=True)
+                    
+            for i in impacts:
+                out.write(",\n\t\t\"impacts\":\n")
+                '''
+                for e in flag[attack_type][i]:
+                    out.write("\t\t\t{\n")
+                    out.write("\t\t\t\"reason\":\"%s\",\n" % e[2])
+                    out.write("\t\t\t\"regexp\":\"%s\",\n" % e[1])
+                    l = e[3].replace("\"","").replace("[","").replace("/","").replace("]","").replace("\n","")
+                    out.write("\t\t\t\"line\":\"%s\"\n" % l)
+                    out.write("\t\t\t},\n")
+                '''
+                out.write(json.dumps(flag[attack_type]))
+            out.write("\n\t\t},")
+        out.write("\n\t\"file\":\"%s\",\n\t\"time\":\"%s\"\n}" % (access, curtime))
+        
+        out.close()
+    except IOError:
+        print "Cannot open the file:", fname
+    return
+    return
+    
+
+
+
 
 months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
@@ -644,6 +692,8 @@ def main(argc, argv):
                     preferences['output'] += ",xml"
                 elif s in ("--text", "-t"):
                     preferences['output'] += ",text"
+                elif s in ("--json", "-j"):
+                    preferences['output'] += ",json"
                 elif s in ("--except", "-c"):
                     preferences['except'] = True
                 elif s in ("--tough","-u"):
